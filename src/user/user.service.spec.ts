@@ -1,17 +1,33 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from 'generated/prisma';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DeepMockProxy, mockDeep } from "jest-mock-extended";
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 
 import { UserService } from './user.service';
-import { PrismaService } from "../prisma/prisma.service";
+import { PrismaService } from '../prisma/prisma.service';
 
 describe('UserService', () => {
   let userService: UserService;
   let prismaMock: DeepMockProxy<PrismaClient>;
 
   const mockUsers = [
-    { id: '1', name: 'Alice', email: 'alice@test.com', password: '123456' },
-    { id: '2', name: 'Bob', email: 'bob@test.com', password: '654321' },
+    {
+      id: '1',
+      name: 'Alice',
+      email: 'alice@test.com',
+      password: '123456',
+      role: 'USER',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: '2',
+      name: 'Bob',
+      email: 'bob@test.com',
+      password: '654321',
+      role: 'USER',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
   ];
 
   beforeEach(async () => {
@@ -42,47 +58,59 @@ describe('UserService', () => {
 
   it('should return one user by id', async () => {
     prismaMock.user.findUnique.mockImplementation(({ where }) =>
-      Promise.resolve(mockUsers.find(user => user.id === where.id))
+      Promise.resolve(mockUsers.find((user) => user.id === where.id)),
     );
 
     const user = await userService.findOne('1');
 
     expect(user).toEqual(mockUsers[0]);
-    expect(prismaMock.user.findUnique).toHaveBeenCalledWith({ where: { id: '1' }});
+    expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
+      where: { id: '1' },
+    });
   });
 
   it('should create a new user', async () => {
     prismaMock.user.create.mockImplementation(({ data }) =>
-      Promise.resolve({ id: mockUsers.length + 1, ...data })
+      Promise.resolve({ id: mockUsers.length + 1, ...data }),
     );
 
-    const newUser = { name: 'Charlie', email: 'charlie@test.com', password: '1a2b3c4a' };
+    const newUser = {
+      name: 'Charlie',
+      email: 'charlie@test.com',
+      password: '1a2b3c4a',
+    };
     const createdUser = await userService.create(newUser);
 
     expect(createdUser).toMatchObject(newUser);
     expect(prismaMock.user.create).toHaveBeenCalledWith({ data: newUser });
-  })
+  });
 
   it('should update an user', async () => {
     prismaMock.user.update.mockImplementation(({ where, data }) =>
-      Promise.resolve({ ...mockUsers.find(user => user.id === where.id), ...data })
+      Promise.resolve({
+        ...mockUsers.find((user) => user.id === where.id),
+        ...data,
+      }),
     );
 
     const user = { name: 'Ítalo' };
     const updatedUser = await userService.update('1', user);
 
     expect(updatedUser.name).toBe('Ítalo');
-    expect(prismaMock.user.update).toHaveBeenCalledWith({ where: { id: '1' }, data: user });
-  })
+    expect(prismaMock.user.update).toHaveBeenCalledWith({
+      where: { id: '1' },
+      data: user,
+    });
+  });
 
   it('should delete an user', async () => {
     prismaMock.user.delete.mockImplementation(({ where }) =>
-      Promise.resolve(mockUsers.find(user => user.id === where.id))
-    )
+      Promise.resolve(mockUsers.find((user) => user.id === where.id)),
+    );
 
-    const deleteUser = await userService.delete('2')
+    const deleteUser = await userService.delete('2');
 
     expect(deleteUser).toEqual(mockUsers[1]);
     expect(prismaMock.user.delete).toHaveBeenCalledWith({ where: { id: '2' } });
-  })
+  });
 });
