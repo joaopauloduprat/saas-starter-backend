@@ -25,5 +25,3 @@ lerna-debug.log*
 
 # idea directory
 .idea
-
-/generated/prisma
