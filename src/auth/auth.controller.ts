@@ -8,11 +8,17 @@ export class AuthController {
 
   @Post('signup')
   signup(@Body() body: { email: string; password: string }) {
-    return this.authService.signup(body.email, body.password);
+    return this.authService.signup({
+      email: body.email,
+      password: body.password,
+    });
   }
 
   @Post('login')
   login(@Body() body: { email: string; password: string }) {
-    return this.authService.login(body.email, body.password);
+    return this.authService.login({
+      email: body.email,
+      password: body.password,
+    });
   }
 }
