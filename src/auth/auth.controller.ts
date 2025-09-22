@@ -11,6 +11,7 @@ export class AuthController {
     return this.authService.signup({
       email: body.email,
       password: body.password,
+      name: body.name,
     });
   }
 
