@@ -15,21 +15,21 @@ import { UserService } from './user.service';
 @UseGuards(AuthGuard('jwt'))
 @Controller('user')
 export class UserController {
-  constructor(private readonly usersService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get()
   findAll() {
-    return this.usersService.findAll();
+    return this.userService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+    return this.userService.findOne(id);
   }
 
   @Post()
   create(@Body() body: { email: string; password: string; name?: string }) {
-    return this.usersService.create(body);
+    return this.userService.create(body);
   }
 
   @Put(':id')
@@ -37,11 +37,11 @@ export class UserController {
     @Param('id') id: string,
     @Body() body: { email?: string; password?: string; name?: string },
   ) {
-    return this.usersService.update(id, body);
+    return this.userService.update(id, body);
   }
 
   @Delete(':id')
   delete(@Param('id') id: string) {
-    return this.usersService.delete(id);
+    return this.userService.delete(id);
   }
 }
