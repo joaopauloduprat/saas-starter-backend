@@ -11,6 +11,8 @@ import {
 } from '@nestjs/common';
 
 import { UserService } from './user.service';
+import { CreateUserDto } from './dto/createUser.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('user')
@@ -28,16 +30,13 @@ export class UserController {
   }
 
   @Post()
-  create(@Body() body: { email: string; password: string; name?: string }) {
-    return this.userService.create(body);
+  create(@Body() dto: CreateUserDto) {
+    return this.userService.create(dto);
   }
 
   @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() body: { email?: string; password?: string; name?: string },
-  ) {
-    return this.userService.update(id, body);
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    return this.userService.update(id, dto);
   }
 
   @Delete(':id')

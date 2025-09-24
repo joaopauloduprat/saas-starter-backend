@@ -1,18 +1,27 @@
+import { PrismaClient } from '@prisma/client';
 import { Test, TestingModule } from '@nestjs/testing';
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
+
 import { TaskService } from './task.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 describe('TaskService', () => {
-  let service: TaskService;
+  let taskService: TaskService;
+  let prismaMock: DeepMockProxy<PrismaService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TaskService],
+      providers: [
+        TaskService,
+        { provide: PrismaService, useValue: mockDeep<PrismaClient>() },
+      ],
     }).compile();
 
-    service = module.get<TaskService>(TaskService);
+    prismaMock = module.get(PrismaService);
+    taskService = module.get(TaskService);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(taskService).toBeDefined();
   });
 });
