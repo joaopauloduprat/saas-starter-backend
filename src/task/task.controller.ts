@@ -8,10 +8,10 @@ import {
   Patch,
   Delete,
 } from '@nestjs/common';
-import type { Task } from '@prisma/client';
 import { AuthGuard } from '@nestjs/passport';
 
 import { TaskService } from './task.service';
+import { CreateTaskDto } from './dto/createTask.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('task')
@@ -19,11 +19,8 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
-  create(
-    @Param('projectId') projectId: string,
-    @Body() body: Task,
-  ): Promise<Task> {
-    return this.taskService.create(projectId, body);
+  create(@Param('projectId') projectId: string, @Body() dto: CreateTaskDto) {
+    return this.taskService.create(projectId, dto);
   }
 
   @Get()
@@ -40,9 +37,9 @@ export class TaskController {
   update(
     @Param('projectId') projectId: string,
     @Param('id') id: string,
-    @Body() body: Partial<Task>,
+    @Body() dto: CreateTaskDto,
   ) {
-    return this.taskService.update(projectId, id, body);
+    return this.taskService.update(projectId, id, dto);
   }
 
   @Delete(':id')

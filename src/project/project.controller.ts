@@ -12,6 +12,8 @@ import {
 
 import { ProjectService } from './project.service';
 import type JwtPayload from '../auth/types/jwt-payload';
+import { CreateProjectDto } from './dto/createProject.dto';
+import { UpdateProjectDto } from './dto/updateProject.dto';
 import { CurrentUser } from '../common/decorators/currentUser.decorator';
 
 @Controller('project')
@@ -20,11 +22,8 @@ export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Post()
-  create(
-    @CurrentUser() user: JwtPayload,
-    @Body() body: { name: string; description?: string },
-  ) {
-    return this.projectService.create(user.sub, body);
+  create(@CurrentUser() user: JwtPayload, @Body() dto: CreateProjectDto) {
+    return this.projectService.create(user.sub, dto);
   }
 
   @Get()
@@ -41,9 +40,9 @@ export class ProjectController {
   update(
     @CurrentUser() user: JwtPayload,
     @Param('id') id: string,
-    @Body() body: { name?: string; description?: string },
+    @Body() dto: UpdateProjectDto,
   ) {
-    return this.projectService.update(id, user.sub, body);
+    return this.projectService.update(id, user.sub, dto);
   }
 
   @Delete(':id')
